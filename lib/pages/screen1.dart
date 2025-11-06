@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:realprobation/util/toDoTile.dart';
 
 class Screen1 extends StatefulWidget {
   const Screen1({super.key});
@@ -16,18 +17,32 @@ class _Screen1State extends State<Screen1> {
     });
   }
 
+  List todoList = [
+    ["Make food", false],
+    ["Walk the dog", true],
+    ["Do homework", false],
+    ["Clean the house", true],
+    ["Read a book", false],
+  ];
+
+  void checkedBoxState(bool? value, int index) {
+    setState(() {
+      todoList[index][1] = !todoList[index][1];
+      // Update the checkbox state here
+    });
+  }
+
   final TextEditingController _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Stack(
-        fit: StackFit.expand,
+      body: Column(
         children: [
-          Positioned(
-            left: 70,
-            top: 15,
+          // Top section with button and TextField
+          Padding(
+            padding: const EdgeInsets.only(left: 70, top: 15),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -35,27 +50,12 @@ class _Screen1State extends State<Screen1> {
                   onPressed: onPress,
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(),
-                    backgroundColor: Colors.brown[100], // Button color
-                    foregroundColor: Colors.black, // Icon color
+                    backgroundColor: Colors.brown[100],
+                    foregroundColor: Colors.black,
                   ),
                   child: Icon(Icons.add),
                 ),
-
-                // GestureDetector(
-                //   child: Center(
-                //     child: Container(
-                //       width: 50,
-                //       height: 50,
-                //       color: Colors.brown[100],
-                //       // margin: EdgeInsets.all(10),
-                //       child: Center(child: Icon(Icons.add)),
-                //     ),
-                //   ),
-                //   onTap: () => print("noted"),
-                // ),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 SizedBox(
                   width: 300,
                   height: 50,
@@ -63,7 +63,7 @@ class _Screen1State extends State<Screen1> {
                     controller: _textController,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.yellow[150],
+                      fillColor: Colors.yellow[50],
                       border: OutlineInputBorder(),
                       hintText: "Write what you want to do here",
                     ),
@@ -72,7 +72,22 @@ class _Screen1State extends State<Screen1> {
               ],
             ),
           ),
-          Column(),
+          // ListView section with TodoTiles
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: ListView.builder(
+                itemCount: todoList.length,
+                itemBuilder: (context, index) {
+                  return Todotile(
+                    taskName: todoList[index][0],
+                    taskCompleted: todoList[index][1],
+                    onChanged: (value) => checkedBoxState(value, index),
+                  );
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
